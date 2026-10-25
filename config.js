@@ -23,3 +23,5 @@ window.LOJA_CONFIG = {
     email: ""             // email de contacto para clientes
   }
 };
+   supabaseUrl: "https://jytcctfgdpwowvnvmkvq.supabase.co",
+   supabaseAnonKey: "sb_publishable_rC3jrKUdyt7oYJ9rC19KiA_c9uVkHrm",
