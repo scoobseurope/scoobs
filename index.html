@@ -5,7 +5,7 @@
 <!--ARTIFACT-START-->
 <title>Scoobs</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="description" content="Produto TCG selado em inglês: Pokémon, One Piece e Dragon Ball. Pagamento por transferência ou na entrega.">
+<meta name="description" content="Cartas TCG e colecionáveis: Pokémon e One Piece selados de fábrica. Pagamento por transferência ou em dinheiro na entrega.">
 <link rel="icon" href="marca.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,6 +37,7 @@
   --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
@@ -134,8 +135,9 @@ main{padding-block:20px 64px;min-height:60vh}
 .row.total{font-weight:600;font-size:17px}
 .modal{position:fixed;z-index:41;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:22px}
 .modal h2{font:800 22px/1 var(--f-display);text-transform:uppercase;margin-bottom:14px}
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
-.tab{border:0;background:none;padding:10px 12px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:10px 12px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap}
 .tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
 
 /* Formulários */
@@ -236,8 +238,8 @@ footer a{color:var(--muted)}
 <main class="wrap">
   <section id="v-catalogo" data-view>
     <div class="intro">
-      <h1>Produto selado, <span>em inglês</span></h1>
-      <p>Pokémon, One Piece e Dragon Ball. Encomendas por número, pagamento por transferência bancária ou em dinheiro na entrega.</p>
+      <h1>Cartas TCG <span>e colecionáveis</span></h1>
+      <p>Pokémon e One Piece selados de fábrica, e mais colecionáveis a caminho. Encomendas por número, pagamento por transferência bancária ou em dinheiro na entrega.</p>
     </div>
     <div class="facts" id="facts"></div>
     <div class="tools">
@@ -277,7 +279,7 @@ const LIVE = !!(CFG.supabaseUrl && CFG.supabaseAnonKey);
 const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
 const EMAILJS_JS = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js";
 
-const GAMES = {pokemon:"Pokémon", onepiece:"One Piece", dragonball:"Dragon Ball", outro:"Outros"};
+const GAMES = {pokemon:"Pokémon", onepiece:"One Piece", dragonball:"Dragon Ball", outro:"Colecionáveis"};
 const STATUS = {aguarda_pagamento:"Por pagar", pago:"Pago", enviado:"Enviado", entregue:"Entregue", cancelado:"Cancelado"};
 const PAY = {transferencia:"Transferência bancária", entrega:"Pagamento na entrega"};
 
@@ -351,7 +353,7 @@ function liveApi(){
 /*  Dados: modo demonstração (fica só neste browser)                   */
 /* ------------------------------------------------------------------ */
 function demoApi(){
-  const KEY = "loja-demo-v2";
+  const KEY = "loja-demo-v3";
   const seed = () => ({
     seq: 0, session: null, users: [{id:"admin", email:"admin@demo.pt", pw:"demo"}], admins: ["admin"], orders: [], profiles: {},
     settings: {store_name:"Scoobs", iban:"PT50 0000 0000 0000 0000 0000 0", iban_holder:"Nome do Titular",
@@ -365,7 +367,7 @@ function demoApi(){
       {id:5, name:"Ascended Heroes — Elite Trainer Box", game:"pokemon", product_type:"ETB", set_code:"", language:"ENG", price:54.90, stock:0, preorder:false, description:"", image_url:"", active:true, sort:5},
       {id:6, name:"OP-11 — Booster Box (24)", game:"onepiece", product_type:"Booster Box", set_code:"OP-11", language:"ENG", price:109.90, stock:3, preorder:false, description:"24 boosters.", image_url:"", active:true, sort:6},
       {id:7, name:"Extra Booster — Display", game:"onepiece", product_type:"Display", set_code:"", language:"ENG", price:94.90, stock:4, preorder:true, release_date:"2026-12-05", description:"Pré-venda. Data de saída estimada.", image_url:"", active:true, sort:7},
-      {id:8, name:"Fusion World — Booster Box", game:"dragonball", product_type:"Booster Box", set_code:"", language:"ENG", price:79.90, stock:5, preorder:false, description:"24 boosters.", image_url:"", active:true, sort:8}
+      {id:8, name:"Hot Wheels — Pack de 5 carros", game:"outro", product_type:"Hot Wheels", set_code:"", language:"", price:12.90, stock:5, preorder:false, description:"Exemplo de colecionável.", image_url:"", active:true, sort:8}
     ]
   });
   let db = store.get(KEY, null) || seed();
@@ -541,7 +543,7 @@ function renderCatalog(){
     <article class="card">
       ${boxHtml(p)}
       <div class="card-body">
-        <div class="tags"><span class="tag">${esc(GAMES[p.game] || "")}</span><span class="tag lang">${esc(p.language || "ENG")}</span></div>
+        <div class="tags"><span class="tag">${esc(GAMES[p.game] || "")}</span>${p.language ? `<span class="tag lang">${esc(p.language)}</span>` : ""}</div>
         <h3 title="${esc(p.name)}">${esc(p.name)}</h3>
         ${stockHtml(p)}
         <div class="card-foot">
@@ -983,7 +985,7 @@ function renderLegal(which){
   if (which === "termos"){
     $("#v-termos").innerHTML = `<h1 class="page-title">Termos e condições</h1>${note}
       <h2>1. Quem somos</h2><p>${name} é uma loja online explorada por ${ph(L.titular, "nome do titular")}, empresário em nome individual, NIF ${ph(L.nif, "NIF")}, com morada em ${ph(L.morada, "morada fiscal")}. Contacto: ${ph(email, "email")}.</p>
-      <h2>2. Produtos</h2><p>Vendemos produto de jogos de cartas colecionáveis selado de fábrica, em inglês salvo indicação em contrário. As fotografias são ilustrativas. Nos produtos em pré-venda, a data de saída é a anunciada pelo fabricante e pode mudar; se o atraso for superior a 30 dias, pode cancelar a encomenda e recebe o valor pago.</p>
+      <h2>2. Produtos</h2><p>Vendemos cartas colecionáveis (TCG) seladas de fábrica e outros colecionáveis. A língua de cada produto está indicada na ficha. As fotografias são ilustrativas. Nos produtos em pré-venda, a data de saída é a anunciada pelo fabricante e pode mudar; se o atraso for superior a 30 dias, pode cancelar a encomenda e recebe o valor pago.</p>
       <h2>3. Preços</h2><p>Os preços estão em euros e incluem IVA à taxa legal em vigor, quando aplicável. Os portes de envio e a taxa de entrega em mão são indicados antes de confirmar a encomenda.</p>
       <h2>4. Encomendas</h2><p>Para encomendar é preciso criar uma conta. Cada encomenda recebe um número único, enviado por email com as instruções de pagamento. O contrato fica concluído quando o pagamento é confirmado (transferência) ou no ato da entrega (pagamento na entrega).</p>
       <h2>5. Pagamento</h2><ul><li><b>Transferência bancária:</b> tem ${esc(s.payment_days || 3)} dias para pagar, indicando o número da encomenda no descritivo. Sem pagamento nesse prazo, a encomenda é cancelada e o stock libertado.</li><li><b>Pagamento na entrega:</b> entrega em mão, paga em dinheiro no ato, com uma taxa de ${eur(s.delivery_fee)}. Combinamos o dia e o local pelo telemóvel.</li></ul>
