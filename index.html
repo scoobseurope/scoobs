@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="pt-PT">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--ARTIFACT-START-->
+<title>Scoobs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Produto TCG selado em inglês: Pokémon, One Piece e Dragon Ball. Pagamento por transferência ou na entrega.">
+<link rel="icon" href="marca.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@700;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Marca Scoobs: bege do logo, vermelho da capa, tinta quase preta do doberman.
+   Layout: catálogo em grelha de caixas seladas; carrinho em painel deslizante; checkout numa coluna estreita. */
+:root{
+  --bg:#F4E6D6; --surface:#FFFAF4; --ink:#1B1612; --muted:#6E6052; --line:#E4D3C0;
+  --accent:#E3202C; --accent-ink:#FFFFFF; --soft:#FBDDD7; --logo-bg:#EED4BA; --mark-glow:transparent; --band-bg:#EED4BA; --band-ink:#1B1612; --band-muted:#5C4A3A; --band-red:#E3202C;
+  --ok:#17804A; --ok-soft:#E1F3E9; --warn:#9A6200; --warn-soft:#FBF0D9; --bad:#B3302A; --bad-soft:#FBE5E3;
+  --g-pokemon:#E2A50E; --g-onepiece:#C6372C; --g-dragonball:#2A72D8; --g-outro:#69717E;
+  --holo:linear-gradient(115deg,#6FF2DC 0%,#9C8DFF 34%,#FF9BD6 64%,#FFE27F 100%);
+  --f-display:"Rubik","Arial Black",system-ui,sans-serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px; --shadow:0 10px 30px rgba(60,30,10,.14);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17110D; --surface:#221A15; --ink:#F5ECE2; --muted:#B4A596; --line:#372B22;
+  --accent:#FF4D55; --accent-ink:#17110D; --soft:#3A1B19; --mark-glow:rgba(245,230,212,.75);
+  --ok:#55C98A; --ok-soft:#132A1E; --warn:#E6B04A; --warn-soft:#2B2210; --bad:#F07A72; --bad-soft:#2E1614;
+  --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#17110D; --surface:#221A15; --ink:#F5ECE2; --muted:#B4A596; --line:#372B22;
+  --accent:#FF4D55; --accent-ink:#17110D; --soft:#3A1B19; --mark-glow:rgba(245,230,212,.75);
+  --ok:#55C98A; --ok-soft:#132A1E; --warn:#E6B04A; --warn-soft:#2B2210; --bad:#F07A72; --bad-soft:#2E1614;
+  --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+
+/* Barra de topo */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:8px;min-height:64px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);flex:none;margin-right:auto}
+.brand-mark{height:50px;width:auto;flex:none;display:block;filter:drop-shadow(0 0 1px var(--mark-glow)) drop-shadow(0 0 1px var(--mark-glow))}
+.brand-name{font:800 22px/1 var(--f-display);letter-spacing:.01em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+.top .btn svg{width:18px;height:18px;flex:none}
+.top .btn.primary .badge{background:var(--accent-ink);color:var(--accent)}
+@media (max-width:560px){.top .lbl{display:none}.top .btn{padding:9px 11px;gap:6px}.brand-name{font-size:20px}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 15px;cursor:pointer;font-weight:600;font-size:14px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.block{width:100%;padding:13px 18px;font-size:15px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.danger{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.badge{min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font:600 12px/20px var(--f-body);text-align:center}
+.demo{background:var(--warn-soft);color:var(--warn);font-size:13px;border-bottom:1px solid var(--line)}
+.demo .wrap{padding-block:8px}
+.err-banner{background:var(--bad-soft);color:var(--bad);font-size:14px}
+.err-banner .wrap{padding-block:10px}
+
+/* Catálogo */
+main{padding-block:20px 64px;min-height:60vh}
+.intro{margin-bottom:18px}
+.intro h1{font:800 clamp(26px,6vw,42px)/1.05 var(--f-display);text-transform:uppercase;letter-spacing:-.01em;max-width:18ch}
+.intro h1 span{color:var(--accent)}
+.intro p{margin:8px 0 0;max-width:52ch;color:var(--muted)}
+.facts{display:grid;grid-template-columns:minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);margin-bottom:20px}
+.fact{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:11px 14px;font-size:14px;border-top:1px solid var(--line);min-width:0}
+.fact:first-child{border-top:0}
+.fact b{font-weight:600;flex:none}
+.fact span{color:var(--muted);text-align:right;min-width:0}
+@media (min-width:760px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}.fact{border-top:0;border-left:1px solid var(--line);flex-direction:column;gap:2px}.fact:first-child{border-left:0}.fact span{text-align:left}}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.tools .chips{flex:1 1 100%}
+@media (min-width:760px){.tools .chips{flex:0 1 auto}}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;max-width:100%}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;cursor:pointer;font-size:14px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.search{flex:1 1 200px;min-width:0;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px}
+@media (min-width:760px){.grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.box{aspect-ratio:4/3;max-width:100%;position:relative;display:flex;align-items:flex-end;padding:12px;color:#fff;overflow:hidden;background:var(--gc)}
+.box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.box.has-img{background:var(--line)}
+.box::before{content:"";position:absolute;left:0;right:0;top:14%;height:12%;background:var(--holo);opacity:.85;mix-blend-mode:screen}
+.box.has-img::before{display:none}
+.box::after{content:"";position:absolute;inset:0;background:linear-gradient(155deg,rgba(255,255,255,.22),transparent 45%,rgba(0,0,0,.18))}
+.box-type{position:relative;z-index:1;font:800 clamp(17px,4vw,22px)/1 var(--f-display);text-transform:uppercase;letter-spacing:.01em;text-shadow:0 1px 0 rgba(0,0,0,.15);max-width:100%;overflow-wrap:anywhere}
+.box-code{position:absolute;z-index:1;top:8px;right:10px;font:500 11px var(--f-mono);background:rgba(0,0,0,.28);padding:2px 6px;border-radius:4px}
+.card-body{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:4px;background:var(--bg);color:var(--muted)}
+.tag.lang{font-family:var(--f-mono);letter-spacing:0}
+.card h3{font-size:15px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.stock{font-size:13px}
+.stock.low{color:var(--warn)} .stock.out{color:var(--bad)} .stock.pre{color:var(--accent)}
+.card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:6px}
+.price{font:800 20px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.add{width:40px;height:40px;border-radius:50%;padding:0;font-size:22px;line-height:1}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:32px 20px;text-align:center;color:var(--muted)}
+
+/* Painel lateral (carrinho) e modal */
+.scrim{position:fixed;inset:0;background:rgba(10,12,20,.45);z-index:40}
+.sheet{position:fixed;z-index:41;background:var(--surface);box-shadow:var(--shadow);display:flex;flex-direction:column;
+  right:0;top:0;bottom:0;width:min(420px,100%);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px)}
+@media (max-width:560px){.sheet{top:auto;left:0;width:100%;max-height:88%;border-radius:16px 16px 0 0;padding-left:env(safe-area-inset-left,0px);padding-top:0}}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.sheet-head h2{font:800 20px/1 var(--f-display);text-transform:uppercase}
+.sheet-body{overflow:auto;padding:8px 18px;flex:1}
+.sheet-foot{border-top:1px solid var(--line);padding:16px 18px;display:grid;gap:12px}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.line:last-child{border-bottom:0}
+.line-name{font-weight:600;min-width:0}
+.qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px}
+.qty button{width:32px;height:32px;border:0;background:none;cursor:pointer;font-size:17px}
+.qty span{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.row.total{font-weight:600;font-size:17px}
+.modal{position:fixed;z-index:41;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 32px));max-height:calc(100% - 48px);overflow:auto;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);padding:22px}
+.modal h2{font:800 22px/1 var(--f-display);text-transform:uppercase;margin-bottom:14px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px;overflow-x:auto}
+.tab{border:0;background:none;padding:10px 12px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-color:var(--accent)}
+
+/* Formulários */
+form{display:grid;gap:14px}
+.field{display:grid;gap:5px;min-width:0}
+.field label{font-size:13px;font-weight:600}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:11px 12px}
+.field textarea{min-height:76px;resize:vertical}
+.field .hint{font-size:12px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:120px 1fr;gap:12px}
+@media (max-width:420px){.two{grid-template-columns:1fr}}
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.form-msg{font-size:14px;padding:10px 12px;border-radius:8px}
+.form-msg.err{background:var(--bad-soft);color:var(--bad)}
+.form-msg.ok{background:var(--ok-soft);color:var(--ok)}
+
+/* Checkout */
+.narrow{max-width:960px}
+.page-title{font:800 clamp(24px,5vw,36px)/1.05 var(--f-display);text-transform:uppercase;margin-bottom:18px}
+.checkout{display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:860px){.checkout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:14px;min-width:0}
+.panel h2{font-size:16px;font-weight:600}
+.pay{display:grid;gap:10px}
+.pay-opt{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:start;border:1px solid var(--line);border-radius:var(--r);padding:14px;cursor:pointer;background:var(--bg)}
+.pay-opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.pay-opt input{margin-top:3px;accent-color:var(--accent)}
+.pay-opt b{display:block}
+.pay-opt .fee{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.summary{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px)}
+.sum-line{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.sum-line span:first-child{min-width:0}
+.gate{text-align:center;padding:28px 18px}
+.gate p{max-width:38ch;margin:6px auto 16px}
+
+/* Confirmação */
+.ticket{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;max-width:620px}
+.ticket-head{padding:22px;border-bottom:1px dashed var(--line);position:relative}
+.ticket-head::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--accent)}
+.order-no{font:500 clamp(22px,6vw,30px)/1.1 var(--f-mono);letter-spacing:.02em;margin-top:6px;overflow-wrap:anywhere}
+.ticket-body{padding:22px;display:grid;gap:16px}
+.kv{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;background:var(--bg);border-radius:8px;padding:12px 14px}
+.kv dt{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.kv dd{margin:0;font-family:var(--f-mono);font-size:14px;overflow-wrap:anywhere;min-width:0}
+.copy{font-size:12px;padding:5px 10px}
+
+/* Estados */
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.st-aguarda_pagamento{background:var(--warn-soft);color:var(--warn)}
+.st-pago{background:var(--soft);color:var(--accent)}
+.st-enviado,.st-entregue{background:var(--ok-soft);color:var(--ok)}
+.st-cancelado{background:var(--bad-soft);color:var(--bad)}
+
+/* Conta e admin */
+.orders{display:grid;gap:10px}
+.order{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.order summary{list-style:none;cursor:pointer;padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:center}
+.order summary::-webkit-details-marker{display:none}
+.order-detail{padding:0 16px 16px;display:grid;gap:10px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat b{display:block;font:800 26px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.plist{display:grid;gap:8px}
+.prow{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;cursor:pointer;text-align:left;width:100%}
+.prow .sw{width:44px;height:34px;border-radius:5px;background:var(--gc);background-size:cover;background-position:center}
+.prow.off{opacity:.55}
+.admin-bar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
+
+/* Páginas legais */
+.legal{max-width:68ch}
+.legal h2{font-size:18px;margin:26px 0 6px}
+.legal p,.legal li{color:var(--ink)}
+.legal .note{background:var(--warn-soft);color:var(--warn);padding:10px 12px;border-radius:8px;font-size:14px}
+
+footer{border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
+footer .wrap{padding-block:22px;display:flex;flex-wrap:wrap;gap:10px 22px;font-size:13px;color:var(--muted)}
+footer a{color:var(--muted)}
+.toast{position:fixed;z-index:60;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:11px 18px;border-radius:999px;font-size:14px;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+@media (prefers-reduced-motion:no-preference){
+  .sheet{animation:slide .22s ease-out} @media (max-width:560px){.sheet{animation:rise .22s ease-out}}
+  @keyframes slide{from{transform:translateX(30px);opacity:.6}} @keyframes rise{from{transform:translateY(40px);opacity:.6}}
+}
+</style>
+
+<div id="demo-banner" class="demo" hidden><div class="wrap">Demonstração: produtos de exemplo, contas e encomendas guardadas só neste browser.</div></div>
+<div id="err-banner" class="err-banner" hidden><div class="wrap" id="err-text"></div></div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#catalogo"><img class="brand-mark" src="marca.png" alt="" width="43" height="50"><span class="brand-name" id="brand-name">Scoobs</span></a>
+    <a class="btn ghost" id="nav-admin" href="#admin" aria-label="Gestão" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span class="lbl">Gestão</span></a>
+    <button class="btn" id="nav-account" type="button" aria-label="Entrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg><span class="lbl" id="nav-account-lbl">Entrar</span></button>
+    <button class="btn primary" id="nav-cart" type="button" aria-label="Carrinho"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="lbl">Carrinho</span><span class="badge" id="cart-count">0</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="v-catalogo" data-view>
+    <div class="intro">
+      <h1>Produto selado, <span>em inglês</span></h1>
+      <p>Pokémon, One Piece e Dragon Ball. Encomendas por número, pagamento por transferência bancária ou em dinheiro na entrega.</p>
+    </div>
+    <div class="facts" id="facts"></div>
+    <div class="tools">
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por jogo"></div>
+      <input class="search" id="search" type="search" placeholder="Procurar produto ou coleção" aria-label="Procurar">
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="v-checkout" data-view hidden></section>
+  <section id="v-encomenda" data-view hidden></section>
+  <section id="v-conta" data-view hidden></section>
+  <section id="v-admin" data-view hidden></section>
+  <section id="v-termos" data-view hidden class="legal"></section>
+  <section id="v-privacidade" data-view hidden class="legal"></section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span id="foot-name">Scoobs</span>
+    <a href="#termos">Termos e condições</a>
+    <a href="#privacidade">Privacidade</a>
+    <a href="https://www.livroreclamacoes.pt" target="_blank" rel="noopener">Livro de Reclamações</a>
+    <span id="foot-contact"></span>
+  </div>
+</footer>
+
+<div id="overlay"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+"use strict";
+const CFG = window.LOJA_CONFIG || {};
+const LIVE = !!(CFG.supabaseUrl && CFG.supabaseAnonKey);
+const SUPABASE_JS = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js";
+const EMAILJS_JS = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js";
+
+const GAMES = {pokemon:"Pokémon", onepiece:"One Piece", dragonball:"Dragon Ball", outro:"Outros"};
+const STATUS = {aguarda_pagamento:"Por pagar", pago:"Pago", enviado:"Enviado", entregue:"Entregue", cancelado:"Cancelado"};
+const PAY = {transferencia:"Transferência bancária", entrega:"Pagamento na entrega"};
+
+const $ = (s, el=document) => el.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = new Intl.NumberFormat("pt-PT", {style:"currency", currency:"EUR"});
+const eur = n => fmt.format(Number(n) || 0);
+const fdate = d => d ? new Date(d).toLocaleDateString("pt-PT", {day:"2-digit", month:"short", year:"numeric"}) : "";
+const fdatetime = d => d ? new Date(d).toLocaleString("pt-PT", {day:"2-digit", month:"2-digit", year:"numeric", hour:"2-digit", minute:"2-digit"}) : "";
+const store = {
+  get(k, f){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : f; } catch(e){ return f; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+};
+function loadScript(src){
+  return new Promise((res, rej) => {
+    if (document.querySelector(`script[src="${src}"]`)) return res();
+    const s = document.createElement("script"); s.src = src; s.onload = res;
+    s.onerror = () => rej(new Error("Não foi possível carregar " + src)); document.head.appendChild(s);
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dados: modo real (Supabase)                                        */
+/* ------------------------------------------------------------------ */
+function liveApi(){
+  const sb = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey);
+  const PUB = "id,store_name,shipping_fee,delivery_fee,free_shipping_from,payment_days,contact_email,contact_phone,delivery_area";
+  const ok = r => { if (r.error) throw new Error(r.error.message); return r.data; };
+  return {
+    live: true,
+    async init(onAuth){
+      sb.auth.onAuthStateChange((ev, session) => setTimeout(() => onAuth(ev, session ? session.user : null), 0));
+      const { data } = await sb.auth.getSession();
+      return data.session ? data.session.user : null;
+    },
+    async settings(){ return ok(await sb.from("settings").select(PUB).eq("id", 1).single()); },
+    async products(){ return ok(await sb.from("products").select("*").order("sort").order("created_at", {ascending:false})); },
+    async isAdmin(){ const r = await sb.rpc("is_admin"); return !r.error && r.data === true; },
+    async signIn(email, pw){ ok(await sb.auth.signInWithPassword({email, password:pw})); },
+    async signUp(email, pw){
+      const d = ok(await sb.auth.signUp({email, password:pw, options:{emailRedirectTo: location.origin + location.pathname}}));
+      return { needsConfirm: !d.session };
+    },
+    async signOut(){ await sb.auth.signOut(); },
+    async resetPassword(email){ ok(await sb.auth.resetPasswordForEmail(email, {redirectTo: location.origin + location.pathname})); },
+    async setPassword(pw){ ok(await sb.auth.updateUser({password:pw})); },
+    async profile(uid){ const r = await sb.from("profiles").select("*").eq("id", uid).maybeSingle(); return r.data || null; },
+    async placeOrder(items, payment, details, notes){
+      return ok(await sb.rpc("place_order", {p_items:items, p_payment:payment, p_details:details, p_notes:notes || null}));
+    },
+    async myOrders(uid){ return ok(await sb.from("orders").select("*, order_items(*)").eq("user_id", uid).order("created_at", {ascending:false})); },
+    async allOrders(){ return ok(await sb.from("orders").select("*, order_items(*)").order("created_at", {ascending:false}).limit(500)); },
+    async setStatus(id, s){ ok(await sb.rpc("admin_set_status", {p_order_id:id, p_status:s})); },
+    async saveProduct(p){
+      const { id, created_at, ...row } = p;
+      if (id) ok(await sb.from("products").update(row).eq("id", id));
+      else ok(await sb.from("products").insert(row));
+    },
+    async uploadImage(file){
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      ok(await sb.storage.from("produtos").upload(path, file, {cacheControl:"31536000", upsert:false}));
+      return sb.storage.from("produtos").getPublicUrl(path).data.publicUrl;
+    },
+    async adminSettings(){ return ok(await sb.rpc("admin_get_settings")); },
+    async saveSettings(s){ ok(await sb.rpc("admin_save_settings", {p:s})); }
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Dados: modo demonstração (fica só neste browser)                   */
+/* ------------------------------------------------------------------ */
+function demoApi(){
+  const KEY = "loja-demo-v2";
+  const seed = () => ({
+    seq: 0, session: null, users: [{id:"admin", email:"admin@demo.pt", pw:"demo"}], admins: ["admin"], orders: [], profiles: {},
+    settings: {store_name:"Scoobs", iban:"PT50 0000 0000 0000 0000 0000 0", iban_holder:"Nome do Titular",
+      shipping_fee:4.90, delivery_fee:5.00, free_shipping_from:150, payment_days:3,
+      contact_email:"encomendas@exemplo.pt", contact_phone:"", delivery_area:"Zona a combinar"},
+    products: [
+      {id:1, name:"Delta Reign — Elite Trainer Box", game:"pokemon", product_type:"ETB", set_code:"", language:"ENG", price:59.90, stock:6, preorder:false, description:"9 boosters, sleeves, dados e caixa de arrumação.", image_url:"", active:true, sort:1},
+      {id:2, name:"Delta Reign — Booster Bundle", game:"pokemon", product_type:"Bundle", set_code:"", language:"ENG", price:32.90, stock:10, preorder:false, description:"6 boosters.", image_url:"", active:true, sort:2},
+      {id:3, name:"Delta Reign — Booster Box (36)", game:"pokemon", product_type:"Booster Box", set_code:"", language:"ENG", price:184.90, stock:2, preorder:false, description:"36 boosters, selada de fábrica.", image_url:"", active:true, sort:3},
+      {id:4, name:"Delta Reign — 3-Pack Blister", game:"pokemon", product_type:"Blister", set_code:"", language:"ENG", price:16.90, stock:12, preorder:false, description:"3 boosters e carta promo.", image_url:"", active:true, sort:4},
+      {id:5, name:"Ascended Heroes — Elite Trainer Box", game:"pokemon", product_type:"ETB", set_code:"", language:"ENG", price:54.90, stock:0, preorder:false, description:"", image_url:"", active:true, sort:5},
+      {id:6, name:"OP-11 — Booster Box (24)", game:"onepiece", product_type:"Booster Box", set_code:"OP-11", language:"ENG", price:109.90, stock:3, preorder:false, description:"24 boosters.", image_url:"", active:true, sort:6},
+      {id:7, name:"Extra Booster — Display", game:"onepiece", product_type:"Display", set_code:"", language:"ENG", price:94.90, stock:4, preorder:true, release_date:"2026-12-05", description:"Pré-venda. Data de saída estimada.", image_url:"", active:true, sort:7},
+      {id:8, name:"Fusion World — Booster Box", game:"dragonball", product_type:"Booster Box", set_code:"", language:"ENG", price:79.90, stock:5, preorder:false, description:"24 boosters.", image_url:"", active:true, sort:8}
+    ]
+  });
+  let db = store.get(KEY, null) || seed();
+  const save = () => store.set(KEY, db);
+  const wait = (v) => new Promise(r => setTimeout(() => r(v), 180));
+  const cur = () => db.users.find(u => u.id === db.session) || null;
+  const asUser = u => u ? {id:u.id, email:u.email} : null;
+  let notify = () => {};
+  const clone = o => JSON.parse(JSON.stringify(o));
+  return {
+    live: false,
+    async init(onAuth){ notify = onAuth; return asUser(cur()); },
+    async settings(){ const { iban, iban_holder, ...pub } = db.settings; return wait(clone(pub)); },
+    async products(){ const admin = db.admins.includes(db.session); return wait(clone(db.products.filter(p => p.active || admin).sort((a,b) => a.sort - b.sort))); },
+    async isAdmin(){ return db.admins.includes(db.session); },
+    async signIn(email, pw){
+      const u = db.users.find(x => x.email.toLowerCase() === String(email).toLowerCase());
+      if (!u || u.pw !== pw) throw new Error("Email ou palavra-passe incorretos.");
+      db.session = u.id; save(); notify("SIGNED_IN", asUser(u));
+    },
+    async signUp(email, pw){
+      if (db.users.some(x => x.email.toLowerCase() === String(email).toLowerCase())) throw new Error("Já existe uma conta com este email.");
+      const u = {id:"u" + Date.now(), email, pw}; db.users.push(u); db.session = u.id; save(); notify("SIGNED_IN", asUser(u));
+      return { needsConfirm:false };
+    },
+    async demoAdmin(){ db.session = "admin"; save(); notify("SIGNED_IN", asUser(cur())); },
+    async signOut(){ db.session = null; save(); notify("SIGNED_OUT", null); },
+    async resetPassword(){ return wait(); },
+    async setPassword(pw){ const u = cur(); if (u){ u.pw = pw; save(); } },
+    async profile(uid){ return clone(db.profiles[uid] || null); },
+    async placeOrder(items, payment, d, notes){
+      const u = cur(); if (!u) throw new Error("Inicie sessão para fazer a encomenda.");
+      if (!d.full_name || !d.phone) throw new Error("Indique o nome e o telemóvel.");
+      if (!d.address || !d.postal_code || !d.city) throw new Error("Indique a morada completa (rua, código postal e localidade).");
+      let subtotal = 0; const lines = [];
+      for (const it of items){
+        const p = db.products.find(x => x.id === it.id && x.active);
+        if (!p) throw new Error("Um dos produtos já não está disponível. Atualize a página.");
+        if (p.stock < it.qty) throw new Error(`Stock insuficiente para "${p.name}": restam ${p.stock}.`);
+      }
+      for (const it of items){
+        const p = db.products.find(x => x.id === it.id); p.stock -= it.qty;
+        subtotal += p.price * it.qty; lines.push({product_id:p.id, name:p.name, qty:it.qty, unit_price:p.price, line_total:p.price * it.qty});
+      }
+      const s = db.settings;
+      const fee = payment === "entrega" ? s.delivery_fee : (s.free_shipping_from != null && subtotal >= s.free_shipping_from ? 0 : s.shipping_fee);
+      db.seq += 1;
+      const number = `ENC-${new Date().getFullYear()}-${String(db.seq).padStart(4, "0")}`;
+      const order = {id:db.seq, order_number:number, user_id:u.id, email:u.email, ...d, payment_method:payment,
+        subtotal, fee, total:subtotal + fee, status:"aguarda_pagamento", notes:notes || null, created_at:new Date().toISOString(),
+        order_items: lines.map((l, i) => ({id:i + 1, product_id:l.product_id, name:l.name, qty:l.qty, unit_price:l.unit_price}))};
+      db.orders.unshift(order); db.profiles[u.id] = {...d}; save();
+      return wait({order_number:number, email:u.email, full_name:d.full_name, payment, items:lines, subtotal, fee, total:subtotal + fee,
+        iban: payment === "transferencia" ? s.iban : null, iban_holder: payment === "transferencia" ? s.iban_holder : null,
+        payment_days:s.payment_days, delivery_area:s.delivery_area, store_name:s.store_name,
+        contact_email:s.contact_email, contact_phone:s.contact_phone, created_at:order.created_at});
+    },
+    async myOrders(uid){ return wait(clone(db.orders.filter(o => o.user_id === uid))); },
+    async allOrders(){ return wait(clone(db.orders)); },
+    async setStatus(id, st){
+      const o = db.orders.find(x => x.id === id); if (!o || o.status === st) return;
+      const back = st === "cancelado", take = o.status === "cancelado";
+      if (take && o.order_items.some(i => (db.products.find(p => p.id === i.product_id) || {stock:0}).stock < i.qty))
+        throw new Error("Não há stock suficiente para reativar esta encomenda.");
+      if (back || take) o.order_items.forEach(i => { const p = db.products.find(x => x.id === i.product_id); if (p) p.stock += back ? i.qty : -i.qty; });
+      o.status = st; save();
+    },
+    async saveProduct(p){
+      if (p.id){ const i = db.products.findIndex(x => x.id === p.id); db.products[i] = {...db.products[i], ...p}; }
+      else db.products.push({...p, id: Math.max(0, ...db.products.map(x => x.id)) + 1});
+      save();
+    },
+    async uploadImage(file){
+      if (file.size > 600000) throw new Error("Na demonstração, use imagens até 600 KB.");
+      return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error("Não foi possível ler a imagem.")); r.readAsDataURL(file); });
+    },
+    async adminSettings(){ return clone(db.settings); },
+    async saveSettings(s){
+      const n = {...db.settings, ...s};
+      ["shipping_fee","delivery_fee","payment_days"].forEach(k => n[k] = Number(n[k]));
+      n.free_shipping_from = s.free_shipping_from === "" || s.free_shipping_from == null ? null : Number(s.free_shipping_from);
+      db.settings = n; save();
+    },
+    reset(){ db = seed(); save(); }
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Estado                                                             */
+/* ------------------------------------------------------------------ */
+let API;
+const S = {
+  products: [], settings: {}, user: null, admin: false, profile: null,
+  cart: store.get("loja-carrinho", {}), game: "todos", q: "", lastOrder: store.get("loja-ultima", null),
+  adminTab: "encomendas", adminFilter: "todas", editing: null, payment: "transferencia"
+};
+const saveCart = () => store.set("loja-carrinho", S.cart);
+const product = id => S.products.find(p => p.id === Number(id));
+function cartLines(){
+  return Object.entries(S.cart).map(([id, qty]) => ({p: product(id), qty})).filter(l => l.p && l.p.active);
+}
+const cartCount = () => cartLines().reduce((n, l) => n + l.qty, 0);
+const cartSubtotal = () => cartLines().reduce((n, l) => n + l.p.price * l.qty, 0);
+function feeFor(method, subtotal){
+  const s = S.settings;
+  if (method === "entrega") return Number(s.delivery_fee) || 0;
+  if (s.free_shipping_from != null && subtotal >= Number(s.free_shipping_from)) return 0;
+  return Number(s.shipping_fee) || 0;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utilitários de interface                                           */
+/* ------------------------------------------------------------------ */
+let toastTimer;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, 2600);
+}
+function showError(msg){ $("#err-text").textContent = msg; $("#err-banner").hidden = !msg; }
+function closeOverlay(){ $("#overlay").innerHTML = ""; document.body.style.overflow = ""; }
+function openOverlay(html){
+  $("#overlay").innerHTML = `<div class="scrim" data-close></div>${html}`;
+  document.body.style.overflow = "hidden";
+  const f = $("#overlay input, #overlay button:not([data-close])"); if (f) setTimeout(() => f.focus(), 30);
+}
+async function copyText(text, btn){
+  try { await navigator.clipboard.writeText(text); toast("Copiado"); }
+  catch(e){
+    const dd = btn && btn.closest(".kv-item") ? btn.closest(".kv-item").querySelector("dd") : null;
+    if (dd){ const r = document.createRange(); r.selectNodeContents(dd); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+    toast("Selecionado. Copie com o menu do telemóvel.");
+  }
+}
+function boxHtml(p){
+  const color = `var(--g-${GAMES[p.game] ? p.game : "outro"})`;
+  if (p.image_url) return `<div class="box has-img" style="--gc:${color}"><img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy"></div>`;
+  return `<div class="box" style="--gc:${color}" aria-hidden="true">${p.set_code ? `<span class="box-code">${esc(p.set_code)}</span>` : ""}<span class="box-type">${esc(p.product_type || GAMES[p.game] || "Selado")}</span></div>`;
+}
+function stockHtml(p){
+  if (p.stock <= 0) return `<span class="stock out">Esgotado</span>`;
+  if (p.preorder) return `<span class="stock pre">Pré-venda${p.release_date ? " · sai a " + esc(fdate(p.release_date)) : ""}</span>`;
+  if (p.stock <= 3) return `<span class="stock low">Últimas ${p.stock} unidades</span>`;
+  return `<span class="stock muted">Em stock</span>`;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Cabeçalho e catálogo                                               */
+/* ------------------------------------------------------------------ */
+function renderHeader(){
+  const name = S.settings.store_name || "Scoobs";
+  $("#brand-name").textContent = name; $("#foot-name").textContent = name;
+  document.title = name;
+  $("#cart-count").textContent = cartCount();
+  const acc = S.user ? "A minha conta" : "Entrar";
+  $("#nav-account-lbl").textContent = acc; $("#nav-account").setAttribute("aria-label", acc);
+  $("#nav-admin").hidden = !S.admin;
+  const c = [S.settings.contact_email, S.settings.contact_phone].filter(Boolean).join(" · ");
+  $("#foot-contact").textContent = c;
+}
+function renderCatalog(){
+  const s = S.settings;
+  const ship = s.free_shipping_from != null ? `Grátis acima de ${eur(s.free_shipping_from)}` : `${eur(s.shipping_fee)} por encomenda`;
+  $("#facts").innerHTML = `
+    <div class="fact"><b>Envio CTT</b><span>${esc(ship)}</span></div>
+    <div class="fact"><b>Entrega em mão</b><span>${eur(s.delivery_fee)} · ${esc(s.delivery_area || "a combinar")}</span></div>
+    <div class="fact"><b>Transferência</b><span>Pagar em ${Number(s.payment_days) || 3} dias</span></div>`;
+  const games = ["todos", ...Object.keys(GAMES).filter(g => S.products.some(p => p.game === g && p.active))];
+  $("#chips").innerHTML = games.map(g => `<button class="chip" type="button" data-game="${g}" aria-pressed="${S.game === g}">${g === "todos" ? "Todos" : GAMES[g]}</button>`).join("");
+  const q = S.q.trim().toLowerCase();
+  const list = S.products.filter(p => p.active && (S.game === "todos" || p.game === S.game) &&
+    (!q || [p.name, p.set_code, p.product_type, GAMES[p.game]].join(" ").toLowerCase().includes(q)));
+  $("#grid").innerHTML = list.length ? list.map(p => `
+    <article class="card">
+      ${boxHtml(p)}
+      <div class="card-body">
+        <div class="tags"><span class="tag">${esc(GAMES[p.game] || "")}</span><span class="tag lang">${esc(p.language || "ENG")}</span></div>
+        <h3 title="${esc(p.name)}">${esc(p.name)}</h3>
+        ${stockHtml(p)}
+        <div class="card-foot">
+          <span class="price">${eur(p.price)}</span>
+          <button class="btn primary add" type="button" data-add="${p.id}" ${p.stock <= 0 ? "disabled" : ""} aria-label="Adicionar ${esc(p.name)} ao carrinho">+</button>
+        </div>
+      </div>
+    </article>`).join("") : `<div class="empty" style="grid-column:1/-1">${S.products.length ? "Nenhum produto corresponde à pesquisa." : "Ainda não há produtos no catálogo."}</div>`;
+}
+function addToCart(id){
+  const p = product(id); if (!p) return;
+  const now = S.cart[id] || 0;
+  if (now >= p.stock){ toast(`Só há ${p.stock} em stock`); return; }
+  S.cart[id] = now + 1; saveCart(); renderHeader(); toast("Adicionado ao carrinho");
+}
+
+/* ------------------------------------------------------------------ */
+/*  Carrinho                                                           */
+/* ------------------------------------------------------------------ */
+function openCart(){
+  const lines = cartLines();
+  const sub = cartSubtotal();
+  openOverlay(`
+    <aside class="sheet" role="dialog" aria-modal="true" aria-label="Carrinho">
+      <div class="sheet-head"><h2>Carrinho</h2><button class="btn ghost" type="button" data-close>Fechar</button></div>
+      <div class="sheet-body">
+        ${lines.length ? lines.map(l => `
+          <div class="line">
+            <div class="line-name">${esc(l.p.name)}<div class="small muted">${eur(l.p.price)} / un.</div></div>
+            <div class="num" style="text-align:right;font-weight:600">${eur(l.p.price * l.qty)}</div>
+            <div class="qty" aria-label="Quantidade">
+              <button type="button" data-dec="${l.p.id}" aria-label="Menos um">−</button><span>${l.qty}</span><button type="button" data-inc="${l.p.id}" aria-label="Mais um">+</button>
+            </div>
+            <div style="text-align:right"><button class="btn ghost small danger" type="button" data-rm="${l.p.id}">Remover</button></div>
+          </div>`).join("") : `<div class="empty" style="margin:16px 0">O carrinho está vazio.</div>`}
+      </div>
+      ${lines.length ? `<div class="sheet-foot">
+        <div class="row"><span class="muted">Subtotal</span><span class="num">${eur(sub)}</span></div>
+        <div class="small muted">Portes ou taxa de entrega calculados no passo seguinte.</div>
+        <a class="btn primary block" href="#checkout" data-close>Finalizar encomenda</a>
+      </div>` : ""}
+    </aside>`);
+}
+function changeQty(id, d){
+  const p = product(id); if (!p) return;
+  const n = (S.cart[id] || 0) + d;
+  if (n > p.stock){ toast(`Só há ${p.stock} em stock`); return; }
+  if (n <= 0) delete S.cart[id]; else S.cart[id] = n;
+  saveCart(); renderHeader(); openCart(); if (current() === "checkout") renderCheckout();
+}
+
+/* ------------------------------------------------------------------ */
+/*  Conta: entrar / registar                                           */
+/* ------------------------------------------------------------------ */
+function openAuth(tab = "entrar", msg = ""){
+  const t = (id, label) => `<button class="tab" type="button" role="tab" data-auth-tab="${id}" aria-selected="${tab === id}">${label}</button>`;
+  let body = "";
+  if (tab === "entrar") body = `
+    <form id="f-login" novalidate>
+      <div class="field"><label for="li-email">Email</label><input id="li-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="li-pw">Palavra-passe</label><input id="li-pw" name="pw" type="password" autocomplete="current-password" required></div>
+      <div id="auth-msg"></div>
+      <button class="btn primary block" type="submit">Entrar</button>
+      <button class="btn ghost small" type="button" data-auth-tab="recuperar">Esqueci-me da palavra-passe</button>
+      ${!API.live ? `<button class="btn block" type="button" id="demo-admin">Entrar como administrador (demonstração)</button>` : ""}
+    </form>`;
+  else if (tab === "registar") body = `
+    <form id="f-signup" novalidate>
+      <div class="field"><label for="su-email">Email</label><input id="su-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="su-pw">Palavra-passe</label><input id="su-pw" name="pw" type="password" autocomplete="new-password" minlength="8" required><span class="hint">Pelo menos 8 caracteres.</span></div>
+      <div id="auth-msg"></div>
+      <button class="btn primary block" type="submit">Criar conta</button>
+      <p class="small muted" style="margin:0">Ao criar conta aceita os <a href="#termos" data-close>termos</a> e a <a href="#privacidade" data-close>política de privacidade</a>.</p>
+    </form>`;
+  else if (tab === "recuperar") body = `
+    <form id="f-reset" novalidate>
+      <p class="small muted" style="margin:0">Enviamos um link para definir uma nova palavra-passe.</p>
+      <div class="field"><label for="rs-email">Email</label><input id="rs-email" name="email" type="email" autocomplete="email" required></div>
+      <div id="auth-msg"></div>
+      <button class="btn primary block" type="submit">Enviar link</button>
+    </form>`;
+  else if (tab === "nova") body = `
+    <form id="f-newpw" novalidate>
+      <div class="field"><label for="np-pw">Nova palavra-passe</label><input id="np-pw" name="pw" type="password" autocomplete="new-password" minlength="8" required></div>
+      <div id="auth-msg"></div>
+      <button class="btn primary block" type="submit">Guardar palavra-passe</button>
+    </form>`;
+  openOverlay(`
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Conta">
+      <h2>${tab === "nova" ? "Nova palavra-passe" : "A sua conta"}</h2>
+      ${tab === "nova" ? "" : `<div class="tabs" role="tablist">${t("entrar", "Entrar")}${t("registar", "Criar conta")}</div>`}
+      ${msg ? `<p class="small muted">${esc(msg)}</p>` : ""}
+      ${body}
+    </div>`);
+}
+function authMsg(text, kind = "err"){ const m = $("#auth-msg"); if (m) m.innerHTML = text ? `<div class="form-msg ${kind}">${esc(text)}</div>` : ""; }
+async function busy(btn, fn){
+  const label = btn ? btn.textContent : ""; if (btn){ btn.disabled = true; btn.textContent = "Um momento…"; }
+  try { return await fn(); } finally { if (btn && btn.isConnected){ btn.disabled = false; btn.textContent = label; } }
+}
+function friendlyAuth(e){
+  const m = String(e && e.message || e);
+  if (/Invalid login/i.test(m)) return "Email ou palavra-passe incorretos.";
+  if (/Email not confirmed/i.test(m)) return "Confirme primeiro o email (veja a caixa de entrada e o spam).";
+  if (/already registered/i.test(m)) return "Já existe uma conta com este email. Entre em vez de criar conta.";
+  if (/rate limit/i.test(m)) return "Demasiadas tentativas. Espere alguns minutos e tente de novo.";
+  return m;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Checkout                                                           */
+/* ------------------------------------------------------------------ */
+function renderCheckout(){
+  const v = $("#v-checkout");
+  const lines = cartLines();
+  if (!lines.length){
+    v.innerHTML = `<div class="narrow"><h1 class="page-title">Finalizar encomenda</h1><div class="empty">O carrinho está vazio. <a href="#catalogo">Ver produtos</a></div></div>`;
+    return;
+  }
+  if (!S.user){
+    v.innerHTML = `<div class="narrow"><h1 class="page-title">Finalizar encomenda</h1>
+      <div class="panel gate"><h2>Precisa de uma conta para encomendar</h2>
+      <p class="muted">Assim recebe o número de encomenda por email e pode acompanhar o estado em qualquer altura.</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn primary" type="button" data-auth-open="registar">Criar conta</button>
+        <button class="btn" type="button" data-auth-open="entrar">Já tenho conta</button></div></div></div>`;
+    return;
+  }
+  const d = S.profile || {};
+  const s = S.settings;
+  const sub = cartSubtotal();
+  const shipFee = feeFor("transferencia", sub), delFee = feeFor("entrega", sub);
+  const fee = feeFor(S.payment, sub);
+  v.innerHTML = `<div class="narrow">
+    <h1 class="page-title">Finalizar encomenda</h1>
+    <div class="checkout">
+      <form id="f-order" class="panel" novalidate>
+        <h2>Pagamento e entrega</h2>
+        <div class="pay" role="radiogroup" aria-label="Método de pagamento">
+          <label class="pay-opt"><input type="radio" name="payment" value="transferencia" ${S.payment === "transferencia" ? "checked" : ""}>
+            <span><b>Transferência bancária</b><span class="small muted">Envio por CTT. Recebe o IBAN por email e tem ${Number(s.payment_days) || 3} dias para pagar.</span></span>
+            <span class="fee">${shipFee ? "+ " + eur(shipFee) : "Grátis"}</span></label>
+          <label class="pay-opt"><input type="radio" name="payment" value="entrega" ${S.payment === "entrega" ? "checked" : ""}>
+            <span><b>Pagamento na entrega</b><span class="small muted">Entrega em mão, paga em dinheiro no ato. ${esc(s.delivery_area || "")}</span></span>
+            <span class="fee">+ ${eur(delFee)}</span></label>
+        </div>
+        <h2>Os seus dados</h2>
+        <div class="two">
+          <div class="field"><label for="o-name">Nome</label><input id="o-name" name="full_name" autocomplete="name" required value="${esc(d.full_name)}"></div>
+          <div class="field"><label for="o-phone">Telemóvel</label><input id="o-phone" name="phone" type="tel" autocomplete="tel" required value="${esc(d.phone)}"></div>
+        </div>
+        <div class="field"><label for="o-nif">NIF para a fatura <span class="muted">(opcional)</span></label><input id="o-nif" name="nif" inputmode="numeric" maxlength="9" value="${esc(d.nif)}"></div>
+        <div class="field"><label for="o-address" id="o-address-label">${S.payment === "entrega" ? "Morada ou local de entrega" : "Morada de envio"}</label><input id="o-address" name="address" autocomplete="street-address" required value="${esc(d.address)}"></div>
+        <div class="three">
+          <div class="field"><label for="o-postal">Código postal</label><input id="o-postal" name="postal_code" autocomplete="postal-code" placeholder="4000-000" required value="${esc(d.postal_code)}"></div>
+          <div class="field"><label for="o-city">Localidade</label><input id="o-city" name="city" autocomplete="address-level2" required value="${esc(d.city)}"></div>
+        </div>
+        <div class="field"><label for="o-notes">Notas <span class="muted">(opcional)</span></label><textarea id="o-notes" name="notes" maxlength="1000" placeholder="Ex.: horário para a entrega"></textarea></div>
+        <div id="order-msg"></div>
+        <button class="btn primary block" type="submit" id="order-submit">Confirmar encomenda · ${eur(sub + fee)}</button>
+        <p class="small muted" style="margin:0">Ao confirmar aceita os <a href="#termos">termos e condições</a>.</p>
+      </form>
+      <aside class="panel summary">
+        <h2>Resumo</h2>
+        ${lines.map(l => `<div class="sum-line"><span>${l.qty} × ${esc(l.p.name)}</span><span class="num">${eur(l.p.price * l.qty)}</span></div>`).join("")}
+        <hr style="border:0;border-top:1px solid var(--line);margin:4px 0;width:100%">
+        <div class="sum-line"><span class="muted">Subtotal</span><span class="num">${eur(sub)}</span></div>
+        <div class="sum-line"><span class="muted">${S.payment === "entrega" ? "Taxa de entrega" : "Portes CTT"}</span><span class="num">${fee ? eur(fee) : "Grátis"}</span></div>
+        <div class="row total"><span>Total</span><span class="num">${eur(sub + fee)}</span></div>
+        <button class="btn small" type="button" id="edit-cart">Alterar carrinho</button>
+      </aside>
+    </div></div>`;
+}
+async function submitOrder(form){
+  const fd = new FormData(form);
+  const details = {};
+  ["full_name","phone","nif","address","postal_code","city"].forEach(k => details[k] = String(fd.get(k) || "").trim());
+  const msg = $("#order-msg");
+  const fail = t => { msg.innerHTML = `<div class="form-msg err">${esc(t)}</div>`; };
+  if (!details.full_name || !details.phone) return fail("Indique o nome e o telemóvel.");
+  if (!details.address || !details.postal_code || !details.city) return fail("Indique a morada completa.");
+  if (!/^\d{4}-\d{3}$/.test(details.postal_code)) return fail("O código postal deve ter o formato 0000-000.");
+  if (details.nif && !/^\d{9}$/.test(details.nif)) return fail("O NIF tem 9 dígitos.");
+  const items = cartLines().map(l => ({id:l.p.id, qty:l.qty}));
+  const btn = $("#order-submit");
+  await busy(btn, async () => {
+    try {
+      const o = await API.placeOrder(items, S.payment, details, String(fd.get("notes") || "").trim());
+      o.email_status = "pendente";
+      S.lastOrder = o; store.set("loja-ultima", o);
+      S.cart = {}; saveCart();
+      S.products = await API.products(); S.profile = await API.profile(S.user.id);
+      renderHeader();
+      location.hash = "encomenda";
+      sendOrderEmail(o).then(r => { o.email_status = r; store.set("loja-ultima", o); if (current() === "encomenda") renderConfirm(); });
+    } catch(e){ fail(String(e.message || e)); }
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Email da encomenda (EmailJS)                                       */
+/* ------------------------------------------------------------------ */
+function paymentText(o){
+  if (o.payment === "transferencia")
+    return `Transfira ${eur(o.total)} para o IBAN ${o.iban} (titular: ${o.iban_holder}) e indique ${o.order_number} no descritivo. Prazo: ${o.payment_days} dias. Se não recebermos o pagamento nesse prazo, a encomenda é cancelada.`;
+  return `Vamos contactá-lo pelo telemóvel para combinar a entrega. Paga ${eur(o.total)} em dinheiro no ato da entrega (inclui ${eur(o.fee)} de taxa de entrega).`;
+}
+async function sendOrderEmail(o){
+  if (!API.live) return "demo";
+  const E = CFG.emailjs || {};
+  if (!E.publicKey || !E.serviceId || !E.templateId) return "sem-config";
+  try {
+    await loadScript(EMAILJS_JS);
+    const td = 'style="padding:6px 0;border-bottom:1px solid #e5e7eb"';
+    const items_html = `<table style="width:100%;border-collapse:collapse;font-size:14px">${o.items.map(i =>
+      `<tr><td ${td}>${i.qty} × ${esc(i.name)}</td><td ${td} align="right">${eur(i.line_total)}</td></tr>`).join("")}
+      <tr><td ${td}>${o.payment === "entrega" ? "Taxa de entrega" : "Portes CTT"}</td><td ${td} align="right">${o.fee ? eur(o.fee) : "Grátis"}</td></tr>
+      <tr><td style="padding:8px 0;font-weight:bold">Total</td><td style="padding:8px 0;font-weight:bold" align="right">${eur(o.total)}</td></tr></table>`;
+    const payment_html = o.payment === "transferencia"
+      ? `<p><b>Pagamento por transferência bancária</b></p><p>IBAN: <b>${esc(o.iban)}</b><br>Titular: ${esc(o.iban_holder)}<br>Montante: <b>${eur(o.total)}</b><br>Descritivo: <b>${esc(o.order_number)}</b></p><p>Tem ${esc(o.payment_days)} dias para pagar. Assim que o pagamento for confirmado, enviamos a encomenda por CTT.</p>`
+      : `<p><b>Pagamento na entrega</b></p><p>Vamos contactá-lo pelo telemóvel para combinar o dia e o local. Paga <b>${eur(o.total)}</b> em dinheiro no ato da entrega (inclui ${eur(o.fee)} de taxa de entrega).</p>`;
+    await window.emailjs.send(E.serviceId, E.templateId, {
+      to_email: o.email, to_name: o.full_name, order_number: o.order_number, store_name: o.store_name,
+      payment_label: PAY[o.payment], subtotal: eur(o.subtotal), fee: eur(o.fee), total: eur(o.total),
+      items_html, payment_html, items_text: o.items.map(i => `${i.qty} x ${i.name} — ${eur(i.line_total)}`).join("\n"),
+      payment_text: paymentText(o), reply_to: o.contact_email || "", contact_email: o.contact_email || ""
+    }, { publicKey: E.publicKey });
+    return "enviado";
+  } catch(e){ console.warn("Email não enviado", e); return "erro"; }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Confirmação                                                        */
+/* ------------------------------------------------------------------ */
+function renderConfirm(){
+  const v = $("#v-encomenda"); const o = S.lastOrder;
+  if (!o){ v.innerHTML = `<div class="empty">Sem encomenda recente. <a href="#conta">Ver as minhas encomendas</a></div>`; return; }
+  const emailLine = {
+    enviado: `Enviámos estes dados para <b>${esc(o.email)}</b>. Veja também a pasta de spam.`,
+    pendente: `A enviar os dados para ${esc(o.email)}…`,
+    demo: `Na loja real, estes dados seguem por email para ${esc(o.email)}.`,
+    "sem-config": `Guarde estes dados: o envio de email ainda não está configurado.`,
+    erro: `Não conseguimos enviar o email. Guarde estes dados ou veja-os em "A minha conta".`
+  }[o.email_status] || "";
+  const kv = (label, value) => `<div class="kv-item" style="display:contents"><dt>${label}</dt><dd>${esc(value)}</dd><button class="btn copy" type="button" data-copy="${esc(value)}">Copiar</button></div>`;
+  v.innerHTML = `<div class="ticket">
+    <div class="ticket-head">
+      <div class="small muted">Encomenda registada · ${esc(fdatetime(o.created_at))}</div>
+      <div class="order-no">${esc(o.order_number)}</div>
+      <p class="small" style="margin:10px 0 0">${emailLine}</p>
+    </div>
+    <div class="ticket-body">
+      ${o.payment === "transferencia" ? `
+        <div><b>Pagamento por transferência bancária</b><p class="small muted" style="margin:4px 0 0">Tem ${esc(o.payment_days)} dias para pagar. Enviamos por CTT assim que o pagamento for confirmado.</p></div>
+        <dl class="kv">${kv("IBAN", o.iban || "—")}${kv("Titular", o.iban_holder || "—")}${kv("Montante", eur(o.total))}${kv("Descritivo", o.order_number)}</dl>`
+      : `<div><b>Pagamento na entrega</b><p class="small muted" style="margin:4px 0 0">Vamos contactá-lo pelo telemóvel para combinar o dia e o local. Paga <b>${eur(o.total)}</b> em dinheiro no ato da entrega.</p></div>`}
+      <div>${o.items.map(i => `<div class="sum-line"><span>${i.qty} × ${esc(i.name)}</span><span class="num">${eur(i.line_total)}</span></div>`).join("")}
+        <div class="sum-line"><span class="muted">${o.payment === "entrega" ? "Taxa de entrega" : "Portes CTT"}</span><span class="num">${o.fee ? eur(o.fee) : "Grátis"}</span></div>
+        <div class="row total" style="margin-top:6px"><span>Total</span><span class="num">${eur(o.total)}</span></div></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="#conta">As minhas encomendas</a><a class="btn ghost" href="#catalogo">Continuar a ver</a></div>
+    </div></div>`;
+}
+
+/* ------------------------------------------------------------------ */
+/*  A minha conta                                                      */
+/* ------------------------------------------------------------------ */
+function orderCard(o, admin){
+  const items = (o.order_items || []).map(i => `<div class="sum-line"><span>${i.qty} × ${esc(i.name)}</span><span class="num">${eur(i.unit_price * i.qty)}</span></div>`).join("");
+  return `<details class="order" data-order="${o.id}">
+    <summary>
+      <span><span class="mono">${esc(o.order_number)}</span><br><span class="small muted">${esc(fdatetime(o.created_at))}${admin ? " · " + esc(o.full_name) : ""}</span></span>
+      <span style="text-align:right"><span class="pill st-${esc(o.status)}">${STATUS[o.status] || esc(o.status)}</span><br><span class="num small">${eur(o.total)}</span></span>
+    </summary>
+    <div class="order-detail">
+      ${items}
+      <div class="sum-line"><span class="muted">${o.payment_method === "entrega" ? "Taxa de entrega" : "Portes CTT"}</span><span class="num">${eur(o.fee)}</span></div>
+      <div class="small muted">${PAY[o.payment_method] || ""}</div>
+      ${admin ? `<div class="small">
+          <div><b>${esc(o.full_name)}</b> · ${esc(o.phone)} · ${esc(o.email)}</div>
+          <div>${esc(o.address)}, ${esc(o.postal_code)} ${esc(o.city)}</div>
+          ${o.nif ? `<div>NIF ${esc(o.nif)}</div>` : ""}
+          ${o.notes ? `<div class="muted">Notas: ${esc(o.notes)}</div>` : ""}
+        </div>
+        <div class="field"><label for="st-${o.id}">Estado</label>
+          <select id="st-${o.id}" data-status="${o.id}">${Object.entries(STATUS).map(([k, l]) => `<option value="${k}" ${o.status === k ? "selected" : ""}>${l}</option>`).join("")}</select>
+          <span class="hint">Ao cancelar, o stock volta ao catálogo.</span></div>`
+      : (o.payment_method === "transferencia" && o.status === "aguarda_pagamento" ? `<div class="small">Descritivo da transferência: <b class="mono">${esc(o.order_number)}</b></div>` : "")}
+    </div></details>`;
+}
+async function renderAccount(){
+  const v = $("#v-conta");
+  if (!S.user){
+    v.innerHTML = `<div class="narrow"><h1 class="page-title">A minha conta</h1><div class="panel gate"><p class="muted">Entre para ver as suas encomendas.</p>
+      <button class="btn primary" type="button" data-auth-open="entrar">Entrar</button></div></div>`;
+    return;
+  }
+  v.innerHTML = `<div class="narrow"><div class="admin-bar"><h1 class="page-title" style="margin:0">A minha conta</h1>
+    <button class="btn" type="button" id="logout">Terminar sessão</button></div>
+    <p class="muted">${esc(S.user.email)}</p><h2 style="font-size:16px;margin:18px 0 10px">Encomendas</h2><div class="orders" id="my-orders"><div class="muted">A carregar…</div></div></div>`;
+  try {
+    const list = await API.myOrders(S.user.id);
+    $("#my-orders").innerHTML = list.length ? list.map(o => orderCard(o, false)).join("") : `<div class="empty">Ainda não fez nenhuma encomenda. <a href="#catalogo">Ver produtos</a></div>`;
+  } catch(e){ $("#my-orders").innerHTML = `<div class="form-msg err">${esc(e.message)}</div>`; }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Gestão (administrador)                                             */
+/* ------------------------------------------------------------------ */
+async function renderAdmin(){
+  const v = $("#v-admin");
+  if (!S.admin){ v.innerHTML = `<div class="empty">Esta página é só para o administrador da loja.</div>`; return; }
+  const tab = (id, l) => `<button class="tab" type="button" data-admin-tab="${id}" aria-selected="${S.adminTab === id}">${l}</button>`;
+  v.innerHTML = `<h1 class="page-title">Gestão da loja</h1>
+    <div class="tabs" role="tablist">${tab("encomendas", "Encomendas")}${tab("produtos", "Produtos")}${tab("definicoes", "Pagamento e envio")}</div>
+    <div id="admin-body"><div class="muted">A carregar…</div></div>
+    ${!API.live ? `<p style="margin-top:28px"><button class="btn small" type="button" id="demo-reset">Repor dados da demonstração</button></p>` : ""}`;
+  const body = $("#admin-body");
+  try {
+    if (S.adminTab === "encomendas"){
+      const all = await API.allOrders();
+      const n = st => all.filter(o => o.status === st).length;
+      const open = all.filter(o => o.status === "aguarda_pagamento" && o.payment_method === "transferencia").reduce((t, o) => t + Number(o.total), 0);
+      const list = S.adminFilter === "todas" ? all : all.filter(o => o.status === S.adminFilter);
+      body.innerHTML = `
+        <div class="stats">
+          <div class="stat"><b>${n("aguarda_pagamento")}</b><span class="small muted">Por pagar · ${eur(open)} em transferências</span></div>
+          <div class="stat"><b>${n("pago")}</b><span class="small muted">Pagas, por enviar</span></div>
+          <div class="stat"><b>${n("enviado")}</b><span class="small muted">Enviadas</span></div>
+        </div>
+        <div class="admin-bar"><div class="chips">${[["todas", "Todas"], ...Object.entries(STATUS)].map(([k, l]) => `<button class="chip" type="button" data-afilter="${k}" aria-pressed="${S.adminFilter === k}">${l}</button>`).join("")}</div></div>
+        <div class="orders">${list.length ? list.map(o => orderCard(o, true)).join("") : `<div class="empty">Sem encomendas neste estado.</div>`}</div>`;
+    } else if (S.adminTab === "produtos"){
+      const list = await API.products(); S.products = list;
+      body.innerHTML = `<div class="admin-bar"><span class="muted small">${list.length} produtos · toque para editar</span><button class="btn primary" type="button" data-edit="new">Novo produto</button></div>
+        <div class="plist">${list.map(p => `<button type="button" class="prow ${p.active ? "" : "off"}" data-edit="${p.id}">
+          <span class="sw" style="--gc:var(--g-${GAMES[p.game] ? p.game : "outro"});${p.image_url ? `background-image:url('${esc(p.image_url)}')` : ""}"></span>
+          <span style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}</b><span class="small muted">${esc(GAMES[p.game] || "")} · ${p.active ? "visível" : "escondido"}${p.preorder ? " · pré-venda" : ""}</span></span>
+          <span style="text-align:right"><b class="num">${eur(p.price)}</b><br><span class="small ${p.stock <= 0 ? "stock out" : "muted"}">stock ${p.stock}</span></span></button>`).join("") || `<div class="empty">Sem produtos. Crie o primeiro.</div>`}</div>`;
+    } else {
+      const s = await API.adminSettings();
+      body.innerHTML = `<form id="f-settings" class="panel" style="max-width:640px" novalidate>
+        <div class="field"><label for="s-name">Nome da loja</label><input id="s-name" name="store_name" value="${esc(s.store_name)}"></div>
+        <div class="two">
+          <div class="field"><label for="s-iban">IBAN</label><input id="s-iban" name="iban" value="${esc(s.iban)}" placeholder="PT50 …"></div>
+          <div class="field"><label for="s-holder">Titular da conta</label><input id="s-holder" name="iban_holder" value="${esc(s.iban_holder)}"></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="s-ship">Portes CTT (€)</label><input id="s-ship" name="shipping_fee" inputmode="decimal" value="${esc(s.shipping_fee)}"></div>
+          <div class="field"><label for="s-free">Portes grátis a partir de (€)</label><input id="s-free" name="free_shipping_from" inputmode="decimal" value="${esc(s.free_shipping_from ?? "")}"><span class="hint">Vazio = nunca grátis.</span></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="s-del">Taxa de entrega em mão (€)</label><input id="s-del" name="delivery_fee" inputmode="decimal" value="${esc(s.delivery_fee)}"></div>
+          <div class="field"><label for="s-days">Prazo para pagar (dias)</label><input id="s-days" name="payment_days" inputmode="numeric" value="${esc(s.payment_days)}"></div>
+        </div>
+        <div class="field"><label for="s-area">Zona de entrega em mão</label><input id="s-area" name="delivery_area" value="${esc(s.delivery_area)}"><span class="hint">Aparece no catálogo e no checkout.</span></div>
+        <div class="two">
+          <div class="field"><label for="s-mail">Email de contacto</label><input id="s-mail" name="contact_email" type="email" value="${esc(s.contact_email)}"></div>
+          <div class="field"><label for="s-tel">Telefone de contacto</label><input id="s-tel" name="contact_phone" value="${esc(s.contact_phone)}"></div>
+        </div>
+        <div id="settings-msg"></div>
+        <button class="btn primary" type="submit">Guardar</button>
+      </form>`;
+    }
+  } catch(e){ body.innerHTML = `<div class="form-msg err">${esc(e.message)}</div>`; }
+}
+function openProductEditor(id){
+  const p = id === "new" ? {name:"", game:"pokemon", product_type:"", set_code:"", language:"ENG", price:"", stock:0, preorder:false, release_date:"", description:"", image_url:"", active:true, sort:0} : product(id);
+  if (!p) return;
+  S.editing = p;
+  openOverlay(`<aside class="sheet" role="dialog" aria-modal="true" aria-label="Produto">
+    <div class="sheet-head"><h2>${p.id ? "Editar produto" : "Novo produto"}</h2><button class="btn ghost" type="button" data-close>Fechar</button></div>
+    <form id="f-product" class="sheet-body" style="padding-block:16px" novalidate>
+      <div class="field"><label for="p-name">Nome</label><input id="p-name" name="name" required value="${esc(p.name)}" placeholder="Ex.: Delta Reign — Elite Trainer Box"></div>
+      <div class="two">
+        <div class="field"><label for="p-game">Jogo</label><select id="p-game" name="game">${Object.entries(GAMES).map(([k, l]) => `<option value="${k}" ${p.game === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+        <div class="field"><label for="p-type">Tipo</label><input id="p-type" name="product_type" value="${esc(p.product_type)}" placeholder="ETB, Booster Box…" list="types"></div>
+      </div>
+      <datalist id="types"><option>ETB</option><option>Booster Box</option><option>Booster Bundle</option><option>Blister</option><option>Display</option><option>Booster</option><option>Coleção</option><option>Tin</option></datalist>
+      <div class="two">
+        <div class="field"><label for="p-code">Código da coleção</label><input id="p-code" name="set_code" value="${esc(p.set_code)}" placeholder="OP-11"></div>
+        <div class="field"><label for="p-lang">Língua</label><input id="p-lang" name="language" value="${esc(p.language || "ENG")}"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="p-price">Preço (€)</label><input id="p-price" name="price" inputmode="decimal" required value="${esc(p.price)}"></div>
+        <div class="field"><label for="p-stock">Stock</label><input id="p-stock" name="stock" inputmode="numeric" required value="${esc(p.stock)}"></div>
+      </div>
+      <label class="check"><input type="checkbox" name="preorder" ${p.preorder ? "checked" : ""}> Pré-venda</label>
+      <div class="field"><label for="p-date">Data de saída <span class="muted">(pré-venda)</span></label><input id="p-date" name="release_date" type="date" value="${esc(p.release_date || "")}"></div>
+      <div class="field"><label for="p-desc">Descrição</label><textarea id="p-desc" name="description">${esc(p.description)}</textarea></div>
+      <div class="field"><label for="p-img">Fotografia</label><input id="p-img" name="image_file" type="file" accept="image/*">
+        <input name="image_url" value="${esc(p.image_url && !String(p.image_url).startsWith("data:") ? p.image_url : "")}" placeholder="ou cole o link de uma imagem" aria-label="Link da imagem">
+        ${p.image_url ? `<label class="check"><input type="checkbox" name="remove_image"> Remover fotografia atual</label>` : ""}
+        <span class="hint">Sem fotografia, aparece uma caixa com o tipo de produto.</span></div>
+      <div class="two">
+        <div class="field"><label for="p-sort">Ordem no catálogo</label><input id="p-sort" name="sort" inputmode="numeric" value="${esc(p.sort || 0)}"><span class="hint">Números mais baixos aparecem primeiro.</span></div>
+        <label class="check" style="align-self:center"><input type="checkbox" name="active" ${p.active ? "checked" : ""}> Visível na loja</label>
+      </div>
+      <div id="product-msg"></div>
+      <button class="btn primary block" type="submit">Guardar produto</button>
+    </form></aside>`);
+}
+async function saveProductForm(form){
+  const fd = new FormData(form); const p = S.editing; const msg = $("#product-msg");
+  const fail = t => msg.innerHTML = `<div class="form-msg err">${esc(t)}</div>`;
+  const price = Number(String(fd.get("price")).replace(",", "."));
+  const stock = parseInt(fd.get("stock"), 10);
+  if (!String(fd.get("name")).trim()) return fail("Indique o nome do produto.");
+  if (!(price >= 0) || String(fd.get("price")).trim() === "") return fail("Preço inválido.");
+  if (!(stock >= 0)) return fail("Stock inválido.");
+  const btn = form.querySelector('[type="submit"]');
+  await busy(btn, async () => {
+    try {
+      let image_url = fd.get("remove_image") ? "" : (String(fd.get("image_url") || "").trim() || p.image_url || "");
+      const file = fd.get("image_file");
+      if (file && file.size) image_url = await API.uploadImage(file);
+      const row = { name:String(fd.get("name")).trim(), game:fd.get("game"), product_type:String(fd.get("product_type") || "").trim() || null,
+        set_code:String(fd.get("set_code") || "").trim() || null, language:String(fd.get("language") || "ENG").trim() || "ENG",
+        price, stock, preorder:!!fd.get("preorder"), release_date:fd.get("release_date") || null,
+        description:String(fd.get("description") || "").trim() || null, image_url:image_url || null,
+        active:!!fd.get("active"), sort:parseInt(fd.get("sort"), 10) || 0 };
+      if (p.id) row.id = p.id;
+      await API.saveProduct(row);
+      closeOverlay(); toast("Produto guardado");
+      S.products = await API.products(); renderAdmin();
+    } catch(e){ fail(e.message); }
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Páginas legais                                                     */
+/* ------------------------------------------------------------------ */
+function renderLegal(which){
+  const L = CFG.legal || {}; const s = S.settings;
+  const ph = (v, label) => v ? esc(v) : `<mark>[${label}]</mark>`;
+  const name = esc(s.store_name || "a loja");
+  const email = L.email || s.contact_email;
+  const missing = !L.titular || !L.nif || !L.morada;
+  const note = missing ? `<p class="note">Faltam dados do titular. Preencha a secção "legal" do ficheiro de configuração e reveja este texto antes de abrir a loja.</p>` : "";
+  if (which === "termos"){
+    $("#v-termos").innerHTML = `<h1 class="page-title">Termos e condições</h1>${note}
+      <h2>1. Quem somos</h2><p>${name} é uma loja online explorada por ${ph(L.titular, "nome do titular")}, empresário em nome individual, NIF ${ph(L.nif, "NIF")}, com morada em ${ph(L.morada, "morada fiscal")}. Contacto: ${ph(email, "email")}.</p>
+      <h2>2. Produtos</h2><p>Vendemos produto de jogos de cartas colecionáveis selado de fábrica, em inglês salvo indicação em contrário. As fotografias são ilustrativas. Nos produtos em pré-venda, a data de saída é a anunciada pelo fabricante e pode mudar; se o atraso for superior a 30 dias, pode cancelar a encomenda e recebe o valor pago.</p>
+      <h2>3. Preços</h2><p>Os preços estão em euros e incluem IVA à taxa legal em vigor, quando aplicável. Os portes de envio e a taxa de entrega em mão são indicados antes de confirmar a encomenda.</p>
+      <h2>4. Encomendas</h2><p>Para encomendar é preciso criar uma conta. Cada encomenda recebe um número único, enviado por email com as instruções de pagamento. O contrato fica concluído quando o pagamento é confirmado (transferência) ou no ato da entrega (pagamento na entrega).</p>
+      <h2>5. Pagamento</h2><ul><li><b>Transferência bancária:</b> tem ${esc(s.payment_days || 3)} dias para pagar, indicando o número da encomenda no descritivo. Sem pagamento nesse prazo, a encomenda é cancelada e o stock libertado.</li><li><b>Pagamento na entrega:</b> entrega em mão, paga em dinheiro no ato, com uma taxa de ${eur(s.delivery_fee)}. Combinamos o dia e o local pelo telemóvel.</li></ul>
+      <h2>6. Envio</h2><p>Enviamos por CTT para Portugal após a confirmação do pagamento, normalmente em 1 a 3 dias úteis. Verifique a embalagem ao receber e contacte-nos em 48 horas se o produto chegar danificado.</p>
+      <h2>7. Direito de livre resolução</h2><p>Nas compras online pode desistir no prazo de 14 dias a contar da receção, sem indicar motivo (Decreto-Lei n.º 24/2014). Comunique a desistência por email e devolva o produto no mesmo estado, selado. Os portes de devolução ficam a seu cargo. Devolvemos o valor pago, incluindo os portes de envio iniciais, até 14 dias depois de recebermos o produto. Se o produto for aberto, pode ser responsável pela desvalorização.</p>
+      <h2>8. Garantia</h2><p>Os produtos têm a garantia legal de conformidade prevista no Decreto-Lei n.º 84/2021.</p>
+      <h2>9. Reclamações e litígios</h2><p>Pode usar o <a href="https://www.livroreclamacoes.pt" target="_blank" rel="noopener">Livro de Reclamações Eletrónico</a>. Em caso de litígio, pode recorrer a uma entidade de resolução alternativa de litígios de consumo, como o CNIACC (www.cniacc.pt). Mais informação em www.consumidor.gov.pt.</p>`;
+  } else {
+    $("#v-privacidade").innerHTML = `<h1 class="page-title">Política de privacidade</h1>${note}
+      <h2>Responsável pelo tratamento</h2><p>${ph(L.titular, "nome do titular")}, NIF ${ph(L.nif, "NIF")}, ${ph(L.morada, "morada fiscal")}. Contacto: ${ph(email, "email")}.</p>
+      <h2>Que dados recolhemos</h2><p>Email e palavra-passe da conta (a palavra-passe é guardada cifrada), nome, telemóvel, morada, NIF quando o indica, e o histórico de encomendas.</p>
+      <h2>Para quê</h2><p>Para processar e entregar as encomendas, enviar as instruções de pagamento, emitir faturas e cumprir obrigações fiscais. Não enviamos publicidade sem o seu consentimento e não vendemos dados a terceiros.</p>
+      <h2>Fundamento</h2><p>Execução do contrato de compra e cumprimento de obrigações legais (artigo 6.º, n.º 1, alíneas b) e c), do RGPD).</p>
+      <h2>Quem trata os dados por nós</h2><p>Supabase (base de dados e contas), EmailJS e Google (envio de emails) e o serviço de alojamento do site. Alguns destes prestadores podem tratar dados fora da União Europeia, com as garantias previstas no RGPD.</p>
+      <h2>Durante quanto tempo</h2><p>Os dados da conta mantêm-se enquanto a conta existir. Os dados de faturação são guardados durante o prazo legal (10 anos).</p>
+      <h2>Os seus direitos</h2><p>Pode pedir acesso, retificação, apagamento, limitação ou portabilidade dos seus dados, e opor-se ao tratamento, através do email acima. Pode também apresentar reclamação à Comissão Nacional de Proteção de Dados (www.cnpd.pt).</p>
+      <h2>Armazenamento no browser</h2><p>Guardamos o carrinho e a sessão no seu browser para o site funcionar. Não usamos cookies de publicidade nem de análise.</p>`;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Navegação                                                          */
+/* ------------------------------------------------------------------ */
+const VIEWS = ["catalogo", "checkout", "encomenda", "conta", "admin", "termos", "privacidade"];
+const current = () => { const h = location.hash.replace("#", ""); return VIEWS.includes(h) ? h : "catalogo"; };
+function route(){
+  const v = current();
+  document.querySelectorAll("[data-view]").forEach(s => s.hidden = s.id !== "v-" + v);
+  if (v === "catalogo") renderCatalog();
+  if (v === "checkout") renderCheckout();
+  if (v === "encomenda") renderConfirm();
+  if (v === "conta") renderAccount();
+  if (v === "admin") renderAdmin();
+  if (v === "termos" || v === "privacidade") renderLegal(v);
+  window.scrollTo(0, 0);
+}
+async function refreshUser(){
+  S.admin = S.user ? await API.isAdmin() : false;
+  S.profile = S.user ? await API.profile(S.user.id) : null;
+}
+async function onAuth(ev, user){
+  S.user = user;
+  if (ev === "PASSWORD_RECOVERY"){ openAuth("nova"); }
+  await refreshUser();
+  if (ev === "SIGNED_IN" || ev === "SIGNED_OUT") S.products = await API.products();
+  renderHeader();
+  const v = current();
+  if (["checkout", "conta", "admin"].includes(v)) route();
+}
+
+/* ------------------------------------------------------------------ */
+/*  Eventos                                                            */
+/* ------------------------------------------------------------------ */
+document.addEventListener("click", async e => {
+  const t = e.target.closest("button, a, [data-close]"); if (!t) return;
+  if (t.matches("[data-close]")){ if (t.tagName !== "A") e.preventDefault(); closeOverlay(); return; }
+  if (t.id === "nav-cart") return openCart();
+  if (t.id === "nav-account") return S.user ? (location.hash = "conta") : openAuth("entrar");
+  if (t.dataset.add) return addToCart(t.dataset.add);
+  if (t.dataset.inc) return changeQty(t.dataset.inc, 1);
+  if (t.dataset.dec) return changeQty(t.dataset.dec, -1);
+  if (t.dataset.rm){ delete S.cart[t.dataset.rm]; saveCart(); renderHeader(); openCart(); if (current() === "checkout") renderCheckout(); return; }
+  if (t.dataset.game){ S.game = t.dataset.game; return renderCatalog(); }
+  if (t.dataset.authTab) return openAuth(t.dataset.authTab);
+  if (t.dataset.authOpen) return openAuth(t.dataset.authOpen);
+  if (t.dataset.copy !== undefined) return copyText(t.dataset.copy, t);
+  if (t.id === "edit-cart") return openCart();
+  if (t.id === "logout"){ await API.signOut(); location.hash = "catalogo"; toast("Sessão terminada"); return; }
+  if (t.id === "demo-admin"){ await API.demoAdmin(); closeOverlay(); location.hash = "admin"; return; }
+  if (t.id === "demo-reset"){ API.reset(); S.products = await API.products(); S.settings = await API.settings(); S.cart = {}; saveCart(); renderHeader(); renderAdmin(); toast("Demonstração reposta"); return; }
+  if (t.dataset.adminTab){ S.adminTab = t.dataset.adminTab; return renderAdmin(); }
+  if (t.dataset.afilter){ S.adminFilter = t.dataset.afilter; return renderAdmin(); }
+  if (t.dataset.edit) return openProductEditor(t.dataset.edit);
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && $("#overlay").innerHTML) closeOverlay(); });
+document.addEventListener("input", e => { if (e.target.id === "search"){ S.q = e.target.value; renderCatalog(); } });
+document.addEventListener("change", async e => {
+  const t = e.target;
+  if (t.name === "payment"){
+    S.payment = t.value;
+    const keep = {}; const f = $("#f-order");
+    if (f) new FormData(f).forEach((v, k) => keep[k] = v);
+    renderCheckout();
+    Object.entries(keep).forEach(([k, v]) => { const el = $(`#f-order [name="${k}"]`); if (el && el.type !== "radio") el.value = v; });
+    return;
+  }
+  if (t.dataset.status){
+    const prev = t.querySelector("[selected]") ? t.querySelector("[selected]").value : null;
+    try { await API.setStatus(Number(t.dataset.status), t.value); toast("Estado atualizado"); S.products = await API.products(); renderAdmin(); }
+    catch(err){ toast(err.message); if (prev) t.value = prev; }
+  }
+});
+document.addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target; const btn = f.querySelector('[type="submit"]');
+  if (f.id === "f-order") return submitOrder(f);
+  if (f.id === "f-product") return saveProductForm(f);
+  const fd = new FormData(f); const email = String(fd.get("email") || "").trim(); const pw = String(fd.get("pw") || "");
+  if (f.id === "f-login") return busy(btn, async () => {
+    if (!email || !pw) return authMsg("Preencha o email e a palavra-passe.");
+    try { await API.signIn(email, pw); closeOverlay(); toast("Sessão iniciada"); } catch(err){ authMsg(friendlyAuth(err)); }
+  });
+  if (f.id === "f-signup") return busy(btn, async () => {
+    if (!/^\S+@\S+\.\S+$/.test(email)) return authMsg("Indique um email válido.");
+    if (pw.length < 8) return authMsg("A palavra-passe precisa de pelo menos 8 caracteres.");
+    try {
+      const r = await API.signUp(email, pw);
+      if (r.needsConfirm) authMsg("Conta criada. Enviámos um email de confirmação: abra o link e depois entre.", "ok");
+      else { closeOverlay(); toast("Conta criada"); }
+    } catch(err){ authMsg(friendlyAuth(err)); }
+  });
+  if (f.id === "f-reset") return busy(btn, async () => {
+    if (!email) return authMsg("Indique o email da conta.");
+    try { await API.resetPassword(email); authMsg("Se existir uma conta com este email, vai receber um link em poucos minutos.", "ok"); } catch(err){ authMsg(friendlyAuth(err)); }
+  });
+  if (f.id === "f-newpw") return busy(btn, async () => {
+    if (pw.length < 8) return authMsg("A palavra-passe precisa de pelo menos 8 caracteres.");
+    try { await API.setPassword(pw); closeOverlay(); toast("Palavra-passe atualizada"); } catch(err){ authMsg(friendlyAuth(err)); }
+  });
+  if (f.id === "f-settings") return busy(btn, async () => {
+    const s = {}; fd.forEach((v, k) => s[k] = String(v).trim());
+    ["shipping_fee", "delivery_fee", "free_shipping_from"].forEach(k => s[k] = s[k].replace(",", "."));
+    const bad = ["shipping_fee", "delivery_fee"].some(k => s[k] === "" || isNaN(Number(s[k]))) || (s.free_shipping_from && isNaN(Number(s.free_shipping_from))) || !/^\d+$/.test(s.payment_days);
+    const m = $("#settings-msg");
+    if (bad){ m.innerHTML = `<div class="form-msg err">Verifique os valores: use números, por exemplo 4.90.</div>`; return; }
+    try { await API.saveSettings(s); S.settings = await API.settings(); renderHeader(); m.innerHTML = `<div class="form-msg ok">Guardado.</div>`; }
+    catch(err){ m.innerHTML = `<div class="form-msg err">${esc(err.message)}</div>`; }
+  });
+});
+window.addEventListener("hashchange", () => { closeOverlay(); route(); });
+
+/* ------------------------------------------------------------------ */
+/*  Arranque                                                           */
+/* ------------------------------------------------------------------ */
+(async function boot(){
+  try {
+    if (LIVE){ await loadScript(SUPABASE_JS); API = liveApi(); } else { API = demoApi(); $("#demo-banner").hidden = false; }
+    S.user = await API.init(onAuth);
+    const [settings, products] = await Promise.all([API.settings(), API.products()]);
+    S.settings = settings || {}; S.products = products || [];
+    await refreshUser();
+  } catch(e){
+    console.error(e);
+    showError("Não foi possível carregar a loja: " + (e.message || e) + ". Tente atualizar a página.");
+  }
+  renderHeader(); route();
+})();
+})();
+</script>
+</html>
